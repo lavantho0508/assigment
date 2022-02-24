@@ -7,7 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-    demo
+  <?php
+  $json = '["geeks", "for", "geeks"]';
+  $data = json_decode($json);
+  foreach ($data as $demo) {
+      echo $demo;
+  }
+  ?>
    
 </body>
 </html>
