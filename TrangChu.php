@@ -12,7 +12,7 @@ session_start();
     <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 
-<body>
+<body ng-app="myApp">
     <div class="container m-auto mt-0 p-0">
     <div class="row m-0 p-0 bg-light">
         <nav class="row navbar navbar-expand-lg bg-primary m-0">
@@ -26,7 +26,7 @@ session_start();
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav ">
                         <li class="nav-item dropdown">
-                            <a class="card-header nav-link text-white dropdown-toggle" href="#"
+                            <a class="card-header nav-link text-white dropdown-toggle" href="#danhmuc"
                                 data-bs-toggle="dropdown" data-bs-target="#coll_danhmuc">Danh mục
                             </a>
                             <ul class="card-body p-0 dropdown-menu" id="coll_danhmuc">
@@ -69,7 +69,7 @@ session_start();
                             <a class="nav-link" style="color: white;" href="#lienhe">Liên hệ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" style="color: white;" href="GopY.php"> Góp ý</a>
+                            <a class="nav-link" style="color: white;" href="#gopy"> Góp ý</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" style="color: white;" href="HoiDap.php"> Hỏi đáp</a>
@@ -99,7 +99,7 @@ session_start();
                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalDoiMK">Đổi mật khẩu</a></li>
                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
                                         data-bs-target="#exampleModalQuenMK">Quên mật khẩu</a></li>
-                                <hr>                           
+                                <hr>
                                 <li><a class="dropdown-item" href="#">Cập nhật tài khoản</a></li>
                                 <li><a class="dropdown-item" href="main/noLogin.php">Đăng xuất</a></li>
                             </ul>
@@ -115,10 +115,10 @@ session_start();
         <header class="bg-light m-0 ">
             <div class="row container m-auto">
                 <img src="images/Hoconline.png" class="">
-                
+
             </div>
             <div class="col-12 text-center mt-2" >
-                <a class="col-3 btn btn-primary position-obsite" 
+                <a class="col-3 btn btn-primary position-obsite"
                 href="<?php if(isset($_SESSION['user']))
                 {echo 'DanhMuc.php';}
                 ?>">
@@ -177,7 +177,7 @@ session_start();
                         <p>Email: <a href="#" >tholvph13911@fpt.edu.vn</a></p>
                     </div>
                     <div class="col-12 col-md-2">
-                        <h5 >Tham gia</h5>  
+                        <h5 >Tham gia</h5>
                         <p>Giáo viên trường FPTPolytechnic.</p>
                         <p>Sinh viên trường đại học FPT.</p>
                     </div>
@@ -188,7 +188,7 @@ session_start();
                     <div class="col-12 col-md-12">
                         <p class="text-center">Trụ sở chính Tòa nhà FPT Polytechnic, Phố Trịnh Văn Bô, Nam Từ Liêm, Hà Nội</p>
                         <p class="text-center" >
-                            Tòa nhà FPT Polytechnic, Phố Trịnh Văn Bô, Nam Từ Liêm, Hà Nội 
+                            Tòa nhà FPT Polytechnic, Phố Trịnh Văn Bô, Nam Từ Liêm, Hà Nội
                         <a href="">(024) 7300 1955</a></p>
                     </div>
                 </div>
@@ -196,7 +196,7 @@ session_start();
     </div>
 </div>
         <style>
-            
+
             article img{
                 border-radius: 10%;
                 padding: 10px;
@@ -238,31 +238,33 @@ if ($conn->connect_error) {
   $user=$_POST['user'];
   $passwd=md5($_POST['passwd']);
   $gt=getGioitinh($_POST['gt']);
+  $hoten=$_POST['hoten'];
+  $diachi=$_POST['diachi'];
   if(strlen($user)==0){
     $error['null_user']="Bạn chưa điền username";
-    
+
   }
   if(strlen($_POST['passwd'])==0){
     $error['null_passwd']="Bạn chưa điền password";
-   
+
   }
   if(strlen($user)<6){
     $error['strlen_user']=" username phải trên 6 ký tự";
-   
+
   }
   if(strlen($_POST['passwd'])<6){
     $error['strlen_passwd']="Bạn chưa điền password phải trên 6 ký tự ";
-    
+
   }
   $query="SELECT*FROM USER WHERE USERNAME='$user'";
   $rs=$conn->query($query);
   if($rs->num_rows>0){
     $error['exist_user']="tên đăng nhập đã tồn tại";
     return false;
-   
+
   }
 
-$sql="INSERT INTO user ( USERNAME, PASSWORD,GIOITINH) VALUES ('$user','$passwd','$gt')";
+$sql="INSERT INTO tbl_sample (hoten, diachi,username,password) VALUES ('$hoten','$diachi','$user','$passwd')";
 if($conn->query($sql)==TRUE){
     echo "<script>alert('Tạo tài khoản thành công')</script>";
 }else{
@@ -272,6 +274,7 @@ if($conn->query($sql)==TRUE){
 
 
 ?>
+<div ng-view></div>
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -287,7 +290,7 @@ if($conn->query($sql)==TRUE){
                                 <div class="col-10">
                                     <input class="form-control" required type="text" name="user" id="tk">
                                     <small class="text-danger">
-                                        <?php 
+                                        <?php
                                     if(isset($error['null_user']))
                                     {
                                         echo $error['null_user'];
@@ -307,7 +310,7 @@ if($conn->query($sql)==TRUE){
                                 <div class="col-10">
                                     <input class="form-control"required type="password" name="passwd" id="mk">
                                     <small class="text-danger">
-                                        <?php 
+                                        <?php
                                     if(isset($error['null_passwd']))
                                     {
                                         echo $error['null_passwd'];
@@ -319,12 +322,19 @@ if($conn->query($sql)==TRUE){
                                     ?></small>
                                 </div>
                             </div>
-                            
+
                             <div class="row mt-3">
-                                <label for="e1" class="col-2">Email:</label>
+                                <label for="e1" class="col-2">Họ tên:</label>
 
                                 <div class="col-10">
-                                    <input type="email"required id="e1" name="email" class="form-control">
+                                    <input type="text"required id="e1" name="hoten" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <label for="e1" class="col-2">Địa chỉ:</label>
+
+                                <div class="col-10">
+                                    <input type="text"required id="e1" name="diachi" class="form-control">
                                 </div>
                             </div>
                             <div class="row mt-3">
@@ -350,7 +360,7 @@ if($conn->query($sql)==TRUE){
             </div>
         </div>
     </form>
-  
+
     <!-- dang nhap -->
     <form action="main/login.php" method="POST">
         <div class="modal fade" id="exampleModalDangNhap" tabindex="-1" aria-labelledby="exampleModalLabel2">
@@ -471,7 +481,28 @@ if($conn->query($sql)==TRUE){
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/angularjs.min.js"></script>
-   
+    <script src="js/angular-router.js"></script>
+    <script>
+        const app=angular.module('myApp',[]);
+        app.config(function ($routeProvider, $locationProvider) {
+            $locationProvider.hashPrefix("");
+            $routeProvider
+                .when("/danhmuc", {
+                    templateUrl: 'DanhMuc.php',
+
+                })
+                .when("/gopy", {
+                    templateUrl: 'GopY.php',
+
+                })
+                .when("/hoidap", {
+                    templateUrl: 'HoiDap.php',
+
+                });
+        });
+
+    </script>
+
 </body>
 
 </html>

@@ -1,10 +1,4 @@
-<?php
-session_start();
-if(isset($_SESSION['user'])==false){
-echo "access denied ,please login";
-return false;
-}
-?>
+
 <!DOCTYPE html>
 <html lang="en">
 
